@@ -1,1 +1,1 @@
-echo `find lib* | tr '\n' ':'`
+echo `find lib-* | tr '\n' ':'`
