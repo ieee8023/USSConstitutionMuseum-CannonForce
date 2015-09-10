@@ -108,9 +108,9 @@ public class VideoPlayer {
 	   
 	   setBG("res/image/background-loading.jpg", window);
 	   
-	   Thread.sleep(5000);
+	   Thread.sleep(1000);
 	   
-	   setBG("res/image/background.jpg", window);
+	   setBG("res/image/background-hwerror.jpg", window);
 	   
 	   for (int i = 1; i <= 85; i++) {
 		   
@@ -121,10 +121,8 @@ public class VideoPlayer {
 		   }
 	   }
 	   
-	   setBG("res/image/background-hwerror.jpg", window);
+	   setBG("res/image/background.jpg", window);
        
-       
-       //playVideo("video/mp4s/50.mp4", window, 2);
   }
 
   public static void setBG(String filename, ImageFrame window) throws IOException, InterruptedException{

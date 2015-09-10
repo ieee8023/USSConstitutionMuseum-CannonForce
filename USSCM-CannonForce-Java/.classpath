@@ -11,6 +11,7 @@
 	<classpathentry kind="lib" path="lib-humble-video/humble-video-arch-x86_64-apple-darwin12-0.2.1.jar"/>
 	<classpathentry kind="lib" path="lib-humble-video/slf4j-simple-1.7.12.jar"/>
 	<classpathentry kind="lib" path="lib-humble-video/slf4j-api-1.7.12.jar" sourcepath="libsrc/slf4j-api-1.7.12-sources.jar"/>
+	<classpathentry kind="lib" path="lib-humble-video/humble-video-arch-x86_64-pc-linux-gnu6-0.2.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
