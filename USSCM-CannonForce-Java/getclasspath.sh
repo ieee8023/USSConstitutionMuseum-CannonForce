@@ -1,1 +1,1 @@
-echo `find lib-pl4j | tr '\n' ':'`
+echo `find lib-pi4j | tr '\n' ':'`
