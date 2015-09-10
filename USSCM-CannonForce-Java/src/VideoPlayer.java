@@ -13,8 +13,6 @@ public class VideoPlayer {
 
 	private static void playVideo(String filename) throws InterruptedException, IOException {
 
-		filename = filename + "-i";
-
 		Process p = Runtime.getRuntime().exec("omxplayer" + filename);
 
 		p.waitFor(10, TimeUnit.SECONDS);
