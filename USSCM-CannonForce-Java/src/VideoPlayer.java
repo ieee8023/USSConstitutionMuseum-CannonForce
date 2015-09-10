@@ -1,5 +1,7 @@
+import java.awt.AWTException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Robot;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -13,14 +15,14 @@ public class VideoPlayer {
 
 	private static void playVideo(String filename) throws InterruptedException, IOException {
 
-		Process p = Runtime.getRuntime().exec("omxplayer" + filename);
+		Process p = Runtime.getRuntime().exec("omxplayer " + filename);
 
 		p.waitFor(10, TimeUnit.SECONDS);
 		if (p.isAlive())
 			p.destroyForcibly();
 	}
 
-	public static void main(String[] args) throws InterruptedException, IOException {
+	public static void main(String[] args) throws InterruptedException, IOException, AWTException {
 
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 
@@ -34,6 +36,8 @@ public class VideoPlayer {
 
 		setBG("res/image/background-loading.jpg", window);
 
+		wakeScreen(window);
+		
 		Thread.sleep(1000);
 
 		setBG("res/image/background.jpg", window);
@@ -49,6 +53,19 @@ public class VideoPlayer {
 
 	}
 
+	public static void wakeScreen(ImageFrame window) throws AWTException, InterruptedException{
+		
+        Robot robot = new Robot();
+        
+        // to the left
+        robot.mouseMove(0, window.getHeight());
+        Thread.sleep(1);
+        // to the left
+        robot.mouseMove(window.getWidth(), window.getHeight());
+		
+	}
+	
+	
 	public static void setBG(String filename, ImageFrame window) throws IOException, InterruptedException {
 
 		BufferedImage image = ImageIO.read(new File(filename));
