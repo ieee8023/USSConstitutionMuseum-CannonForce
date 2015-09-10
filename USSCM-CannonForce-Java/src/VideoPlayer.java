@@ -106,22 +106,22 @@ public class VideoPlayer {
 
 	   //window.setSize(800, 640);
 	   
-	   setBG("image/background-loading.jpg", window);
+	   setBG("res/image/background-loading.jpg", window);
 	   
 	   Thread.sleep(5000);
 	   
-	   setBG("image/background.jpg", window);
+	   setBG("res/image/background.jpg", window);
 	   
 	   for (int i = 1; i <= 85; i++) {
 		   
 		   try{
-			   playVideo("video/mp4s/" + String.format("%02d", i) + ".mp4", window, 9999);
+			   playVideo("res/video/mp4s/" + String.format("%02d", i) + ".mp4", window, 9999);
 		   }catch (Exception e) {
 			   e.printStackTrace();
 		   }
 	   }
 	   
-	   setBG("image/background-hwerror.jpg", window);
+	   setBG("res/image/background-hwerror.jpg", window);
        
        
        //playVideo("video/mp4s/50.mp4", window, 2);
