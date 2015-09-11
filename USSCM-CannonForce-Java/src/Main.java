@@ -27,13 +27,16 @@ public class Main {
 			@Override
 			public void callback(HardwareValues values) {
 
-
 				try {
+					VideoPlayer.wakeScreen(window);
 					VideoPlayer.playVideo("res/video/mp4s/" + String.format("%02d", 1) + ".mp4");
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (AWTException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
