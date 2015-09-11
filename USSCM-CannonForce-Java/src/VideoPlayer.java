@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 
 public class VideoPlayer {
 
-	private static void playVideo(String filename) throws InterruptedException, IOException {
+	static void playVideo(String filename) throws InterruptedException, IOException {
 
 		Process p = Runtime.getRuntime().exec("omxplayer " + filename);
 

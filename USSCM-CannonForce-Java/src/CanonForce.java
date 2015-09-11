@@ -15,6 +15,20 @@ public class CanonForce {
     
     public static void main(String args[]) throws InterruptedException {
 
+    	new CanonForce().listen(null);
+    	
+        // keep program running until user aborts (CTRL-C)
+        for (;;) {
+            Thread.sleep(500);
+        }
+    	
+    	
+    }
+    
+    
+    
+    public void listen(final CannonCallback callback){
+    	
         System.out.println("Init Level 1");
         
 		int err = Gertboard.gertboardSPISetup();
@@ -50,6 +64,12 @@ public class CanonForce {
 	                
 	                fireBtnLed.setState(PinState.LOW);
 	                try {
+	                	
+	                	HardwareValues values = new HardwareValues();
+	                	
+	                	if (callback != null)
+	                		callback.callback(values);
+	                	
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 					} finally {
@@ -65,10 +85,7 @@ public class CanonForce {
         System.out.println("Init Level 2");
         System.out.println(fireBtn.getPin() + " waiting");
         
-        // keep program running until user aborts (CTRL-C)
-        for (;;) {
-            Thread.sleep(500);
-        }
+
         
         // stop all GPIO activity/threads by shutting down the GPIO controller
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
