@@ -2,6 +2,9 @@ import java.awt.AWTException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -22,7 +25,9 @@ public class Main {
 		
 		//Thread.sleep(1000);
 
-		new CanonForce().listen(new CannonCallback() {
+		final CanonForce cf = new CanonForce();
+		
+		cf.listen(new CannonCallback() {
 			
 			@Override
 			public void callback(HardwareValues values) {
@@ -43,6 +48,18 @@ public class Main {
 				
 			}
 		});
+		
+    	ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
+    	exec.scheduleAtFixedRate(new Runnable() {
+    	  @Override
+    	  public void run() {
+    		  
+    		  
+    		  
+    		  
+    	  }
+    	}, 0, 500, TimeUnit.MILLISECONDS);
+		
 		
 
 		VideoPlayer.setBG("res/image/background.jpg", window);

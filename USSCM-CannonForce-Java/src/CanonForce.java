@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -9,41 +11,71 @@ import com.pi4j.io.gpio.event.GpioPinDigitalStateChangeEvent;
 import com.pi4j.io.gpio.event.GpioPinListenerDigital;
 import com.pi4j.wiringpi.Gertboard;
 
+import lcd.SevenSegment;
+
 public class CanonForce {
 	
+	final static int MIN_RESISTANCE = 0;
+	final static int MAX_RESISTANCE = 5000;
+	
 	static boolean running = false;
+        
+    final GpioPinDigitalInput fireBtn;
+    final GpioPinDigitalOutput fireBtnLed;
+    final GpioPinDigitalInput wood1In;
+    final GpioPinDigitalInput wood2In;
+    final GpioPinDigitalInput wood3In;
+    final SevenSegment segment;
     
-    public static void main(String args[]) throws InterruptedException {
+    public CanonForce(){
+    	
+    	 System.out.println("Init Level 1");
+         
+ 		int err = Gertboard.gertboardSPISetup();
+ 		if (err != 0) System.out.println("Error with gertboardSPISetup: " + err);
+         
+         final GpioController gpio = GpioFactory.getInstance();
 
-    	new CanonForce().listen(null);
-    	
-        // keep program running until user aborts (CTRL-C)
-        for (;;) {
-            Thread.sleep(500);
-        }
-    	
-    	
+         fireBtn = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, PinPullResistance.PULL_UP);
+         fireBtnLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.HIGH);
+         
+         wood1In = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_UP);
+         wood2In = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_UP);
+         wood3In = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
+         
+
+         segment = new SevenSegment(0x70, true);
     }
     
     
     
+    public HardwareValues getHardwareValues(){
+    	
+    	
+        System.out.println("    wood1In " + wood1In.getState());
+        System.out.println("    wood2In " + wood2In.getState());
+        System.out.println("    wood3In " + wood3In.getState());
+        System.out.println("    distance " + Gertboard.gertboardAnalogRead(1));
+        
+
+    	HardwareValues values = new HardwareValues();
+    	
+    	if (wood1In.getState().isHigh())
+    		values.woodType = HardwareValues.WoodType.LIVEOAK;
+    	if (wood2In.getState().isHigh())
+    		values.woodType = HardwareValues.WoodType.OAK;
+    	if (wood3In.getState().isHigh())
+    		values.woodType = HardwareValues.WoodType.PINE;
+    	
+    	values.distance = Gertboard.gertboardAnalogRead(1);
+    	
+    	return values;
+    }
+        
+    
     public void listen(final CannonCallback callback){
     	
-        System.out.println("Init Level 1");
-        
-		int err = Gertboard.gertboardSPISetup();
-		if (err != 0) System.out.println("Error with gertboardSPISetup: " + err);
-        
-        final GpioController gpio = GpioFactory.getInstance();
-
-        final GpioPinDigitalInput fireBtn = gpio.provisionDigitalInputPin(RaspiPin.GPIO_06, PinPullResistance.PULL_DOWN);
-        final GpioPinDigitalOutput fireBtnLed = gpio.provisionDigitalOutputPin(RaspiPin.GPIO_05, PinState.HIGH);
-        
-        final GpioPinDigitalInput wood1In = gpio.provisionDigitalInputPin(RaspiPin.GPIO_04, PinPullResistance.PULL_DOWN);
-        final GpioPinDigitalInput wood2In = gpio.provisionDigitalInputPin(RaspiPin.GPIO_03, PinPullResistance.PULL_DOWN);
-        final GpioPinDigitalInput wood3In = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_DOWN);
-        
-        
+       
         fireBtn.addListener(new GpioPinListenerDigital() {
             @Override
             public void handleGpioPinDigitalStateChangeEvent(GpioPinDigitalStateChangeEvent event) {
@@ -54,21 +86,12 @@ public class CanonForce {
 	            	running = true;
 	            	
 	                System.out.println(event.getPin() + " = " + event.getState());
-	                System.out.println("    wood1In " + wood1In.getState());
-	                System.out.println("    wood2In " + wood2In.getState());
-	                System.out.println("    wood3In " + wood3In.getState());
-	                System.out.println("    distance " + Gertboard.gertboardAnalogRead(1));
-	                
-	                
-	                
 	                
 	                fireBtnLed.setState(PinState.LOW);
 	                try {
 	                	
-	                	HardwareValues values = new HardwareValues();
-	                	
 	                	if (callback != null)
-	                		callback.callback(values);
+	                		callback.callback(getHardwareValues());
 	                	
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -91,4 +114,32 @@ public class CanonForce {
         // (this method will forcefully shutdown all GPIO monitoring threads and scheduled tasks)
         // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
     }
+    
+    
+    public void writeDistance(int dist){
+    	
+    	try {
+			segment.writeDigit(4, 4);
+			segment.writeDigit(3, 3);
+			segment.writeDigit(2, 2);
+			segment.writeDigit(1, 1);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    
+    public static void main(String args[]) throws InterruptedException {
+
+    	new CanonForce().listen(null);
+    	
+        // keep program running until user aborts (CTRL-C)
+        for (;;) {
+            Thread.sleep(500);
+        }
+    }
+    
 }
