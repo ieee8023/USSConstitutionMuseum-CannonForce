@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
 public class Main {
 
 	public static void main(String[] args) throws IOException, InterruptedException, AWTException {
@@ -54,11 +53,11 @@ public class Main {
     	  @Override
     	  public void run() {
     		  
-    		  
+    		  cf.writeDistance();
     		  
     		  
     	  }
-    	}, 0, 500, TimeUnit.MILLISECONDS);
+    	}, 0, 50, TimeUnit.MILLISECONDS);
 		
 		
 

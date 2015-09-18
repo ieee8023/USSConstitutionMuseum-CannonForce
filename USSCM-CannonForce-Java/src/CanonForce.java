@@ -1,5 +1,7 @@
 import java.io.IOException;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import com.pi4j.io.gpio.GpioPinDigitalInput;
@@ -116,13 +118,25 @@ public class CanonForce {
     }
     
     
-    public void writeDistance(int dist){
+    public void writeDistance(){
+    	
+    	DescriptiveStatistics ds = new DescriptiveStatistics();
+    	
+    	for (int i = 0; i < 10; i++){
+    		ds.addValue(Gertboard.gertboardAnalogRead(1));
+    		
+    		try {Thread.sleep(5);} catch (InterruptedException e) {}
+    	}
+    	
+    	int dist = (int) ds.getMean();
+    	
+    	//System.out.println(dist);
     	
     	try {
-			segment.writeDigit(4, 4);
-			segment.writeDigit(3, 3);
-			segment.writeDigit(2, 2);
-			segment.writeDigit(1, 1);
+    	      segment.writeDigit(0, (dist / 1000));     // 1000th
+    	      segment.writeDigit(1, (dist / 100) % 10); // 100th
+    	      segment.writeDigit(3, (dist / 10) % 10);  // 10th
+    	      segment.writeDigit(4, dist % 10);         // Ones
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
