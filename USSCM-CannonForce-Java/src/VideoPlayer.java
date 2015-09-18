@@ -15,6 +15,7 @@ public class VideoPlayer {
 
 	static void playVideo(String filename) throws InterruptedException, IOException {
 
+		System.out.println("Playing Video: " + filename);
 		Process p = Runtime.getRuntime().exec("omxplayer " + filename);
 
 		p.waitFor(10, TimeUnit.SECONDS);

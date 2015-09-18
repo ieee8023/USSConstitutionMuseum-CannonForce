@@ -17,9 +17,6 @@ import lcd.SevenSegment;
 
 public class CanonForce {
 	
-	final static int MIN_RESISTANCE = 0;
-	final static int MAX_RESISTANCE = 5000;
-	
 	static boolean running = false;
         
     final GpioPinDigitalInput fireBtn;
@@ -27,7 +24,11 @@ public class CanonForce {
     final GpioPinDigitalInput wood1In;
     final GpioPinDigitalInput wood2In;
     final GpioPinDigitalInput wood3In;
+    
     final SevenSegment segment;
+    int distance = 0;
+	final DescriptiveStatistics ds;
+    
     
     public CanonForce(){
     	
@@ -47,6 +48,9 @@ public class CanonForce {
          
 
          segment = new SevenSegment(0x70, true);
+         
+         ds = new DescriptiveStatistics();
+         ds.setWindowSize(30);
     }
     
     
@@ -57,7 +61,7 @@ public class CanonForce {
         System.out.println("    wood1In " + wood1In.getState());
         System.out.println("    wood2In " + wood2In.getState());
         System.out.println("    wood3In " + wood3In.getState());
-        System.out.println("    distance " + Gertboard.gertboardAnalogRead(1));
+        System.out.println("    distance " + distance);
         
 
     	HardwareValues values = new HardwareValues();
@@ -69,7 +73,7 @@ public class CanonForce {
     	if (wood3In.getState().isHigh())
     		values.woodType = HardwareValues.WoodType.PINE;
     	
-    	values.distance = Gertboard.gertboardAnalogRead(1);
+    	values.distance = distance;
     	
     	return values;
     }
@@ -119,24 +123,18 @@ public class CanonForce {
     
     
     public void writeDistance(){
-    	
-    	DescriptiveStatistics ds = new DescriptiveStatistics();
-    	
-    	for (int i = 0; i < 10; i++){
-    		ds.addValue(Gertboard.gertboardAnalogRead(1));
-    		
-    		try {Thread.sleep(5);} catch (InterruptedException e) {}
-    	}
-    	
-    	int dist = (int) ds.getMean();
+
+    	ds.addValue(Gertboard.gertboardAnalogRead(1));
+
+    	distance = (int) ds.getMean();
     	
     	//System.out.println(dist);
     	
     	try {
-    	      segment.writeDigit(0, (dist / 1000));     // 1000th
-    	      segment.writeDigit(1, (dist / 100) % 10); // 100th
-    	      segment.writeDigit(3, (dist / 10) % 10);  // 10th
-    	      segment.writeDigit(4, dist % 10);         // Ones
+    	      segment.writeDigit(0, (distance / 1000));     // 1000th
+    	      segment.writeDigit(1, (distance / 100) % 10); // 100th
+    	      segment.writeDigit(3, (distance / 10) % 10);  // 10th
+    	      segment.writeDigit(4, distance % 10);         // Ones
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -144,8 +142,7 @@ public class CanonForce {
 		}
     	
     }
-    
-    
+
     public static void main(String args[]) throws InterruptedException {
 
     	new CanonForce().listen(null);
