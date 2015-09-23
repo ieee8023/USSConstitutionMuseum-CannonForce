@@ -122,19 +122,30 @@ public class SevenSegment
     ALL_CHARS.put("~",  (byte)0x80);                       
   }
   
-  public SevenSegment()
-  {
-    display = new LEDBackPack(0x70);
+  int addr = 0x70;
+  boolean b = false;
+  
+  public SevenSegment(){
+	  
+	  display = new LEDBackPack(0x70);
   }
-  public SevenSegment(int addr)
-  {
-    display = new LEDBackPack(addr, false);
+  public SevenSegment(int addr){
+	  
+	  this.addr = addr;
+	  display = new LEDBackPack(addr, false);
   }
-  public SevenSegment(int addr, boolean b)
-  {
-    display = new LEDBackPack(addr, b);
+  public SevenSegment(int addr, boolean b){
+	  
+	  this.addr = addr;
+	  this.b = b;
+	  display = new LEDBackPack(addr, b);
   }
 
+  public void reconnect(){
+	  
+	  display = new LEDBackPack(addr, b);
+  }
+  
   /*
    * Sets a digit using the raw 16-bit value
    */

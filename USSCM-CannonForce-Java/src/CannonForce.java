@@ -25,7 +25,9 @@ public class CannonForce {
     final GpioPinDigitalInput wood2In;
     final GpioPinDigitalInput wood3In;
     
-    final SevenSegment segment;
+    // change addresses https://learn.adafruit.com/adafruit-led-backpack/changing-i2c-address
+    final SevenSegment segmentDistance;
+    final SevenSegment segmentForce;
     int distance = 0;
 	final DescriptiveStatistics ds;
     
@@ -47,16 +49,17 @@ public class CannonForce {
          wood3In = gpio.provisionDigitalInputPin(RaspiPin.GPIO_02, PinPullResistance.PULL_UP);
          
 
-         segment = new SevenSegment(0x70, true);
+         segmentDistance = new SevenSegment(0x70, true);
+         segmentForce = new SevenSegment(0x71, true);
          
          ds = new DescriptiveStatistics();
-         ds.setWindowSize(5);
+         ds.setWindowSize(20);
     }
     
     
     
     public HardwareValues getHardwareValues(){
-    	
+    		
     	
         System.out.println("    wood1In " + wood1In.getState());
         System.out.println("    wood2In " + wood2In.getState());
@@ -156,14 +159,31 @@ public class CannonForce {
     	//System.out.println("scaled: " + distance);
     	
     	try {
-    	      segment.writeDigit(0, (distance / 1000));     // 1000th
-    	      segment.writeDigit(1, (distance / 100) % 10); // 100th
-    	      segment.writeDigit(3, (distance / 10) % 10);  // 10th
-    	      segment.writeDigit(4, distance % 10);         // Ones
+	      segmentDistance.writeDigit(0, (distance / 1000));     // 1000th
+	      segmentDistance.writeDigit(1, (distance / 100) % 10); // 100th
+	      segmentDistance.writeDigit(3, (distance / 10) % 10);  // 10th
+	      segmentDistance.writeDigit(4, distance % 10);         // Ones
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			System.out.println(e.getMessage());
+			
+			//segmentDistance.reconnect();
+		}
+    	
+    	int force = (int) (167 - ((distance*4.0)/100.0));
+    	
+    	try {
+  	      segmentForce.writeDigit(0, (force / 1000));     // 1000th
+  	      segmentForce.writeDigit(1, (force / 100) % 10); // 100th
+  	      segmentForce.writeDigit(3, (force / 10) % 10);  // 10th
+  	      segmentForce.writeDigit(4, force % 10);         // Ones
+			
+		} catch (IOException e) {
+			
+			System.out.println(e.getMessage());
+			
+			//segmentForce.reconnect();
 		}
     	
     }
