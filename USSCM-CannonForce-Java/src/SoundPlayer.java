@@ -11,39 +11,52 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class SoundPlayer {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
 		
 		System.out.println(Arrays.toString(AudioSystem.getAudioFileTypes()));
 		
-		playSound("res/sound/boom.mp3", true);
+		SoundPlayer sp = new SoundPlayer("res/sound/boom.mp3");
+		
+		sp.playSound(true);
 
         System.out.println("Done");
 		
 	}
 	
-	public static void playSound(String file, boolean block) {
+	final Clip clip;
+	
+	public SoundPlayer(String file) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+		
+		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(file));
+		AudioFormat baseFormat = audioInputStream.getFormat();
+		
+		//System.out.println(baseFormat);
+    	
+		AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+				baseFormat.getSampleRate(),
+				16,
+				baseFormat.getChannels(),
+				baseFormat.getChannels() * 2,
+				baseFormat.getSampleRate(),
+				false);
+		
+		AudioInputStream dis = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
+		audioInputStream = dis;
+		//AudioFormat audioFormat = dis.getFormat();
+		//System.out.println("Converted to: " + audioFormat);
+		
+        clip = AudioSystem.getClip();
+        clip.open(audioInputStream);
+
+		
+	}
+	
+	
+	
+	public void playSound(boolean block) {
 	    try {
 	    	
-			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(file));
-			AudioFormat baseFormat = audioInputStream.getFormat();
-			
-			//System.out.println(baseFormat);
-	    	
-			AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-					baseFormat.getSampleRate(),
-					16,
-					baseFormat.getChannels(),
-					baseFormat.getChannels() * 2,
-					baseFormat.getSampleRate(),
-					false);
-			
-			AudioInputStream dis = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
-			audioInputStream = dis;
-			AudioFormat audioFormat = dis.getFormat();
-			//System.out.println("Converted to: " + audioFormat);
-			
-	        Clip clip = AudioSystem.getClip();
-	        clip.open(audioInputStream);
+	    	clip.setFramePosition(0);
 	        clip.start();
 	    	
 	        if (block)

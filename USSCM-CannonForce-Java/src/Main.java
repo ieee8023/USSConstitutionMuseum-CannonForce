@@ -8,10 +8,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 import org.apache.commons.lang3.ArrayUtils;
 public class Main {
 
-	public static void main(String[] args) throws IOException, InterruptedException, AWTException {
+	public static void main(String[] args) throws IOException, InterruptedException, AWTException, UnsupportedAudioFileException, LineUnavailableException {
 		
 		
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -28,7 +31,7 @@ public class Main {
 		
 		//Thread.sleep(1000);
 
-		
+		final SoundPlayer soundPlayer = new SoundPlayer("res/sound/boom.mp3");
 		
 		
 		
@@ -41,6 +44,7 @@ public class Main {
 
 				try {
 					VideoPlayer.wakeScreen(window);
+					soundPlayer.playSound(false);
 					VideoPlayer.playVideo("res/video/mp4s/" + String.format("%02d", getVideo(values)) + ".mp4");
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
@@ -111,7 +115,7 @@ public class Main {
          * 		 	max - min
 		 */
 		
-		double b = m.get(values.woodType).length;
+		double b = m.get(values.woodType).length-1;
 		double a = 0;
 		double x = values.distance;
 		double min = MIN_RESISTANCE;
@@ -119,8 +123,8 @@ public class Main {
 		
 		double scaled = ((b-a)*(x - min))/(max-min);
 		
-		double scaled2 = Math.max(b,scaled);
-		scaled2 = Math.min(a,scaled2);
+		double scaled2 = Math.min(b,scaled);
+		scaled2 = Math.max(a,scaled2);
 		
 		System.out.println(values.woodType + " in:" + values.distance + ", out:" + scaled + ", out2:" + scaled2);
 		
