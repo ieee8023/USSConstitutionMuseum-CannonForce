@@ -23,32 +23,39 @@ public class SoundPlayer {
 		
 	}
 	
-	final Clip clip;
+	Clip clip;
 	
-	public SoundPlayer(String file) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+	public SoundPlayer(String file) {
 		
-		AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(file));
-		AudioFormat baseFormat = audioInputStream.getFormat();
-		
-		//System.out.println(baseFormat);
-    	
-		AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
-				baseFormat.getSampleRate(),
-				16,
-				baseFormat.getChannels(),
-				baseFormat.getChannels() * 2,
-				baseFormat.getSampleRate(),
-				false);
-		
-		AudioInputStream dis = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
-		audioInputStream = dis;
-		//AudioFormat audioFormat = dis.getFormat();
-		//System.out.println("Converted to: " + audioFormat);
-		
-        clip = AudioSystem.getClip();
-        clip.open(audioInputStream);
-
-		
+		try{
+			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(file));
+			AudioFormat baseFormat = audioInputStream.getFormat();
+			
+			//System.out.println(baseFormat);
+	    	
+			AudioFormat decodedFormat = new AudioFormat(AudioFormat.Encoding.PCM_SIGNED,
+					baseFormat.getSampleRate(),
+					16,
+					baseFormat.getChannels(),
+					baseFormat.getChannels() * 2,
+					baseFormat.getSampleRate(),
+					false);
+			
+			AudioInputStream dis = AudioSystem.getAudioInputStream(decodedFormat, audioInputStream);
+			audioInputStream = dis;
+			//AudioFormat audioFormat = dis.getFormat();
+			//System.out.println("Converted to: " + audioFormat);
+			
+	        clip = AudioSystem.getClip();
+	        clip.open(audioInputStream);
+	        
+		} catch(UnsupportedAudioFileException e){
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (LineUnavailableException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -56,13 +63,17 @@ public class SoundPlayer {
 	public void playSound(boolean block) {
 	    try {
 	    	
-	    	clip.setFramePosition(0);
-	        clip.start();
-	    	
-	        if (block)
-	            while(clip.getFrameLength() >= clip.getFramePosition()+1){
-	            	Thread.sleep(10);
-	            }
+	    	if (clip != null){
+		    	clip.setFramePosition(0);
+		        clip.start();
+		    	
+		        if (block)
+		            while(clip.getFrameLength() >= clip.getFramePosition()+1){
+		            	Thread.sleep(10);
+		            }
+	    	}else{
+	    		System.out.println("clip is null");
+	    	}
 	        
 	    } catch(Exception ex) {
 	        System.out.println("Error with playing sound.");

@@ -1,20 +1,14 @@
-import java.awt.AWTException;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-
 import org.apache.commons.lang3.ArrayUtils;
 public class Main {
 
-	public static void main(String[] args) throws IOException, InterruptedException, AWTException, UnsupportedAudioFileException, LineUnavailableException {
+	public static void main(String[] args) {
 		
 		
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -28,34 +22,21 @@ public class Main {
 		VideoPlayer.setBG("res/image/background-loading.jpg", window);
 
 		VideoPlayer.wakeScreen(window);
-		
-		//Thread.sleep(1000);
 
 		final SoundPlayer soundPlayer = new SoundPlayer("res/sound/boom.mp3");
 		
 		
 		
-		final CanonForce cf = new CanonForce();
+		final CannonForce cf = new CannonForce();
 		
 		cf.listen(new CannonCallback() {
 			
 			@Override
 			public void callback(HardwareValues values) {
 
-				try {
 					VideoPlayer.wakeScreen(window);
 					soundPlayer.playSound(false);
 					VideoPlayer.playVideo("res/video/mp4s/" + String.format("%02d", getVideo(values)) + ".mp4");
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (AWTException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				
 			}
 		});
@@ -70,6 +51,14 @@ public class Main {
     		  
     	  }
     	}, 0, 50, TimeUnit.MILLISECONDS);
+    	
+    	exec.scheduleAtFixedRate(new Runnable() {
+    	  @Override
+    	  public void run() {
+    		  
+				VideoPlayer.wakeScreen(window);
+    	  }
+    	}, 0, 1, TimeUnit.MINUTES);
 		
 		
 
@@ -103,8 +92,6 @@ public class Main {
 	}
 	
 	static HashMap<HardwareValues.WoodType, Integer[]> m =  makeVideos();
-	static int MAX_RESISTANCE = 1000;
-	static int MIN_RESISTANCE = 500;
 	
 	public static int getVideo(HardwareValues values){
 		
@@ -118,8 +105,8 @@ public class Main {
 		double b = m.get(values.woodType).length-1;
 		double a = 0;
 		double x = values.distance;
-		double min = MIN_RESISTANCE;
-		double max = MAX_RESISTANCE;
+		double min = CannonForce.MIN_RESISTANCE;
+		double max = CannonForce.MAX_RESISTANCE;
 		
 		double scaled = ((b-a)*(x - min))/(max-min);
 		

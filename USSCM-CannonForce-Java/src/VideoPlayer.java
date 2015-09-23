@@ -13,14 +13,22 @@ import javax.imageio.ImageIO;
 
 public class VideoPlayer {
 
-	static void playVideo(String filename) throws InterruptedException, IOException {
+	static void playVideo(String filename){
 
-		System.out.println("Playing Video: " + filename);
-		Process p = Runtime.getRuntime().exec("omxplayer " + filename);
-
-		p.waitFor(10, TimeUnit.SECONDS);
-		if (p.isAlive())
-			p.destroyForcibly();
+		try{
+		
+			System.out.println("Playing Video: " + filename);
+			Process p = Runtime.getRuntime().exec("omxplayer " + filename);
+	
+			p.waitFor(10, TimeUnit.SECONDS);
+			if (p.isAlive())
+				p.destroyForcibly();
+			
+		}catch(InterruptedException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void main(String[] args) throws InterruptedException, IOException, AWTException {
@@ -54,24 +62,37 @@ public class VideoPlayer {
 
 	}
 
-	public static void wakeScreen(ImageFrame window) throws AWTException, InterruptedException{
+	public static void wakeScreen(ImageFrame window){
 		
-        Robot robot = new Robot();
-        
-        // to the left
-        robot.mouseMove(0, window.getHeight());
-        Thread.sleep(1);
-        // to the left
-        robot.mouseMove(window.getWidth(), window.getHeight());
+		try{
+		
+	        Robot robot = new Robot();
+	        // to the left
+	        robot.mouseMove(0, window.getHeight());
+	        Thread.sleep(1);
+	        // to the right
+	        robot.mouseMove(window.getWidth(), window.getHeight());
+	        
+		} catch (AWTException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
 	
-	public static void setBG(String filename, ImageFrame window) throws IOException, InterruptedException {
+	public static void setBG(String filename, ImageFrame window) {
 
-		BufferedImage image = ImageIO.read(new File(filename));
-
-		window.setImage(getScaledImage(image, window.getWidth(), window.getHeight()));
+		try{
+			
+			BufferedImage image = ImageIO.read(new File(filename));
+	
+			window.setImage(getScaledImage(image, window.getWidth(), window.getHeight()));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static BufferedImage getScaledImage(BufferedImage image, int width, int height) throws IOException {

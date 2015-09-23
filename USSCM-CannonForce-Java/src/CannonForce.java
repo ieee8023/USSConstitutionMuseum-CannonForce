@@ -15,7 +15,7 @@ import com.pi4j.wiringpi.Gertboard;
 
 import lcd.SevenSegment;
 
-public class CanonForce {
+public class CannonForce {
 	
 	static boolean running = false;
         
@@ -30,7 +30,7 @@ public class CanonForce {
 	final DescriptiveStatistics ds;
     
     
-    public CanonForce(){
+    public CannonForce(){
     	
     	 System.out.println("Init Level 1");
          
@@ -50,7 +50,7 @@ public class CanonForce {
          segment = new SevenSegment(0x70, true);
          
          ds = new DescriptiveStatistics();
-         ds.setWindowSize(30);
+         ds.setWindowSize(5);
     }
     
     
@@ -121,6 +121,8 @@ public class CanonForce {
         // gpio.shutdown();   <--- implement this method call if you wish to terminate the Pi4J GPIO controller        
     }
     
+	public static int MAX_RESISTANCE = 1000;
+	public static int MIN_RESISTANCE = 500;
     
     public void writeDistance(){
 
@@ -128,7 +130,30 @@ public class CanonForce {
 
     	distance = (int) ds.getMean();
     	
-    	//System.out.println(dist);
+    	//System.out.println("Given distance: " + distance);
+    	
+		/*
+		 * scale
+		 *         (b-a)(x - min)
+		 *	f(x) = --------------  + a
+         * 		 	max - min
+		 */
+		
+		double b = 260;
+		double a = 0;
+		double x = distance;
+		double min = CannonForce.MIN_RESISTANCE;
+		double max = CannonForce.MAX_RESISTANCE;
+		
+		double scaled = ((b-a)*(x - min))/(max-min);
+		
+		double scaled2 = Math.min(b,scaled);
+		scaled2 = Math.max(a,scaled2);
+    	
+
+		distance = (int) scaled2;
+    	
+    	//System.out.println("scaled: " + distance);
     	
     	try {
     	      segment.writeDigit(0, (distance / 1000));     // 1000th
@@ -145,7 +170,7 @@ public class CanonForce {
 
     public static void main(String args[]) throws InterruptedException {
 
-    	new CanonForce().listen(null);
+    	new CannonForce().listen(null);
     	
         // keep program running until user aborts (CTRL-C)
         for (;;) {
