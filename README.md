@@ -81,7 +81,19 @@ GP25 : 4 brown main btn
 
 # Dev
 
-The application starts with run.sh. The Java class "Main" is started. 
+The application starts with run.sh. The Java class "Main" is started. The CannonForce class can be thought of as the interface with the hardware and the Main class takes care of all the application logic. Main sets a hardware listener on the main button and sets two scheduled threads to take care of waking the screen and polling the hardware for new values.
+
+Main calls VideoPlayer to play videos and set images on the screen. Main calls SoundPlayer to play one specific audio file which is preloaded for speed.
+
+Inside CannonForce the Pi4j library is used for access to the I/Os on the board. The SPI is used for the ADC on the GertBoard. I2C is used to connect to the LEDDisplays. The rest of the GPIOs used on the GertBoard are passed from the GertBoard to the RPi and used as standard GPIOs.
+
+The getHardwareValues method does the logic of figuring out what kind of wood is inserted.
+
+The DescriptiveStatistics class is used as a fixed size queue to keep track of the most recent samples taken from the ADC for the distance. It contains data for only the last second; a sample is taken every 50ms and the queue is length 20. This is very easy to adjust to make it feel beter for the user.
+
+
+
+
 
 
 
