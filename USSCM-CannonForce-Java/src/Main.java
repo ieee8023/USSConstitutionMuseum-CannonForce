@@ -70,13 +70,13 @@ public class Main {
 	
 		HashMap<HardwareValues.WoodType, Integer[]> m =  new HashMap<HardwareValues.WoodType, Integer[]>();
 		
-		Integer[] live_oak_fame_both_sides_planked = { 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30 };
+		Integer[] live_oak_fame_both_sides_planked =      { 1,  1,   1,  1,  1,  1,  2,  2,  2,  2,  2,  2,  3,  3,  3,  3,  3,  3, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30 };
 		 
 		Integer[] narrow_spaced_fame_both_sides_planked = { 28, 28, 28, 28, 28, 28, 29, 29, 29, 29, 29, 29, 17, 17, 17, 17, 17, 17, 18, 18, 18, 18, 18, 18, 11, 11, 11, 11 };
 		 
-		Integer[] narrow_spaced_fame_w_outer_planking = { 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 6, 6, 6, 6 };
+		Integer[] narrow_spaced_fame_w_outer_planking =   { 21, 21, 21, 21, 21, 21, 22, 22, 22, 22, 22, 22, 13, 13, 13, 13, 13, 13, 14, 14, 14, 14, 14, 14, 6, 6, 6, 6 };
 		 
-		Integer[] no_hull = { 41, 41, 41, 41, 41, 41, 42, 42, 42, 42, 42, 42, 43, 43, 43, 43, 43, 43, 44, 44, 44, 44, 44, 44, 77, 77, 77, 77 };
+		Integer[] no_hull =                               { 41, 41, 41, 41, 41, 41, 42, 42, 42, 42, 42, 42, 43, 43, 43, 43, 43, 43, 44, 44, 44, 44, 44, 44, 77, 77, 77, 77 };
 		
 		ArrayUtils.reverse(live_oak_fame_both_sides_planked);
 		ArrayUtils.reverse(narrow_spaced_fame_both_sides_planked);

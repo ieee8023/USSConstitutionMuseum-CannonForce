@@ -29,6 +29,7 @@ public class CannonForce {
     final SevenSegment segmentDistance;
     final SevenSegment segmentForce;
     int distance = 0;
+    int force = 0;
 	final DescriptiveStatistics ds;
     
     
@@ -171,7 +172,7 @@ public class CannonForce {
 			//segmentDistance.reconnect();
 		}
     	
-    	int force = (int) (167 - ((distance*4.0)/100.0));
+    	force = (int) (167 - ((distance*4.0)/100.0));
     	
     	try {
   	      segmentForce.writeDigit(0, (force / 1000));     // 1000th
