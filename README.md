@@ -67,9 +67,13 @@ The getHardwareValues method does the logic of figuring out what kind of wood is
 The DescriptiveStatistics class is used as a fixed size queue to keep track of the most recent samples taken from the ADC for the distance. It contains data for only the last second; a sample is taken every 50ms and the queue is length 20. This is very easy to adjust to make it feel beter for the user.
 
 
+# Images
 
+Here are some random images from the project:
 
+![](docs/IMG_20150913_113344.jpg)
 
+![](docs/IMG_20150901_105859.jpg)
 
-
+![](docs/IMG_20150901_105547.jpg)
 
